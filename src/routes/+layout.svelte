@@ -21,4 +21,8 @@
 	:global(main) {
 		padding-inline: 10px;
 	}
+	:global(.h-92) {
+		height: 500px;
+		border-radius: 0.375rem;
+	}
 </style>

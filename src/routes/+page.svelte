@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { BlurHash, BlurHashImage } from '../lib/index';
-
 	const hash = 'VNEVf|?aTJkqtR~VxGR+OYShyDt7n$WBbb%MXmSf$Nso';
 	const src = 'https://blur.npdt.dev/_app/immutable/assets/example-8f1db4f1.jpg';
 </script>
@@ -8,11 +7,9 @@
 <h1>Blurhash svelte img</h1>
 <a href="https://github.com/npdtdev/blurhash-svelte"
 	><span class="d-none d-sm-inline">View on GitHub </span><svg
-		version="1.1"
 		width="16"
 		height="16"
 		viewBox="0 0 16 16"
-		class="octicon octicon-mark-github"
 		aria-hidden="true"
 		><path
 			fill-rule="evenodd"
@@ -50,7 +47,7 @@
 	<li>
 		Use the component
 		<br /><code>
-			{'<BlurHashImage height={128} width={128} punch={1} src={"<YOUR-IMAGE-SRC>"} hash={"<YOUR-BLURHASH-STRING>"} useLazy={true} />'}
+			{"<BlurHashImage height={300} width={300} src={'<YOUR-IMAGE-SOURCE>'} alt={'<YOUR-IMAGE-ALT>'} hash={'<YOUR-HASH-STRING>'} />"}
 		</code>
 	</li>
 	<li>
@@ -61,17 +58,9 @@
 	</li>
 	<code />
 </ol>
-<BlurHashImage
-	transitionDuration={1000}
-	height={128}
-	width={128}
-	punch={1}
-	alt={'My example photo'}
-	{src}
-	{hash}
-	useLazy={true}
-/>
-<h3>BlurHashImage</h3>
+<BlurHashImage height={300} width={300} {src} alt={'Example of loading an image'} {hash} />
+
+<h3>BlurHash</h3>
 <p>Component for rendering only the blurhash image.</p>
 <ol>
 	<li>
@@ -83,12 +72,12 @@
 	<li>
 		Use the component
 		<br /><code>
-			{'<BlurHashImage height={128} width={128} punch={1} hash={"<YOUR-BLURHASH-STRING>"}/>'}
+			{"<BlurHash height={300} width={300} punch={1} hash={'<YOUR-BLURHASH-STRING>'}/>"}
 		</code>
 	</li>
 	<code />
 </ol>
-<BlurHash height={128} width={128} punch={1} {hash} />
+<BlurHash height={300} width={300} punch={1} {hash} />
 
 <h2 id="extra">Extra</h2>
 
