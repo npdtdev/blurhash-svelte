@@ -1,62 +1,87 @@
 <script lang="ts">
 	import BlurHashCanvas from './BlurHashCanvas.svelte';
-	import { onMount } from 'svelte';
-	import { lazy } from '$lib/utils/use-lazy.js';
+	import { createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition';
 	export let hash: string;
 	export let height: number = 128;
 	export let width: number = 128;
 	export let punch: number = 1;
 	export let src: string;
-	export let srcset: string | null = null;
 	export let alt: string | null;
 	export let transitionDuration: number = 600;
-	let isImageLoaded = false;
-	export let useLazy: boolean = true;
-
+	export let objectFit: 'contain' | 'cover' | undefined = undefined;
+	let className: string = '';
+	export { className as class };
 	let imageElement: HTMLImageElement;
-
-	onMount(() => {
-		imageElement.onload = () => {
-			isImageLoaded = true;
-		};
-		if (!useLazy) {
-			imageElement.src = src;
+	const dispatch = createEventDispatcher();
+	async function fetchImageData() {
+		try {
+			const res = await fetch(src);
+			const blob = await res.blob();
+			return URL.createObjectURL(blob);
+		} catch (err) {
+			error = err ?? true;
+			dispatch('error', err);
 		}
-	});
+	}
+	let error: any | undefined = undefined;
 </script>
 
-<div style="height: {height}px; width: {width}px;" class={$$props.class || ''}>
+<div
+	class={className ?? ''}
+	style="
+	--height:{height}px;
+	--width:{width}px;
+	{objectFit ? `--object-fit: ${objectFit};` : ''}"
+>
 	{#if hash}
-		<BlurHashCanvas {hash} {width} {height} {punch} />
+		<BlurHashCanvas
+			{hash}
+			{width}
+			{height}
+			{punch}
+			on:error={(ev) => {
+				dispatch('error', ev);
+			}}
+		/>
 	{/if}
-	<img
-		style="transition: opacity {transitionDuration}ms ease-out;"
-		use:lazy={useLazy ? { src: `${src}` } : {}}
-		{srcset}
-		{alt}
-		class:loaded={isImageLoaded}
-		bind:this={imageElement}
-	/>
+	{#await fetchImageData() then d}
+		<img
+			{width}
+			{height}
+			style="--height:{height}px; --width:{width}px;"
+			transition:fade={{ duration: transitionDuration }}
+			{alt}
+			src={d}
+			bind:this={imageElement}
+		/>
+	{/await}
+	{#if error}
+		<div>
+			<slot name="error" />
+		</div>
+	{/if}
 </div>
 
 <style>
 	div {
-		position: relative;
+		position: relative !important;
+		max-width: var(--width);
+		max-height: 100%;
+		height: var(--height);
+		object-fit: var(--object-fit, contain);
+		object-position: center;
 	}
 	img {
-		height: 100%;
-		width: 100%;
 		position: absolute;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		opacity: 0;
 		object-fit: inherit;
 		object-position: inherit;
-	}
-
-	.loaded {
-		opacity: 1;
+		border-radius: inherit;
+		width: 100%;
+		height: var(--width);
 	}
 </style>
