@@ -12,7 +12,6 @@
 	export let objectFit: 'contain' | 'cover' | undefined = undefined;
 	let className: string = '';
 	export { className as class };
-	let imageElement: HTMLImageElement;
 	const dispatch = createEventDispatcher();
 	async function fetchImageData() {
 		try {
@@ -53,7 +52,6 @@
 			transition:fade={{ duration: transitionDuration }}
 			{alt}
 			src={d}
-			bind:this={imageElement}
 		/>
 	{/await}
 	{#if error}
